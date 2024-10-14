@@ -5,7 +5,7 @@ from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from  qrcode.image.styles.colormasks import SolidFillColorMask
 
-x = 1
+
 def add_corners(im, rad):
     circle = Image.new('L', (rad * 2, rad * 2), 0)
     draw = ImageDraw.Draw(circle)
@@ -20,24 +20,24 @@ def add_corners(im, rad):
     return im
 
 def style_inner_eyes(img):
-  img_size = img.size[0] * x
+  img_size = (img.size[0])*x
   eye_size = 70 * x #default
   quiet_zone = 40 * x#default
   mask = Image.new('L', img.size, 0)
   draw = ImageDraw.Draw(mask)
-  draw.rectangle((60*x, 60*x, 90*x, 90*x), fill=255) #top left eye
-  draw.rectangle((img_size-90*x, 60*x, img_size-60*x, 90*x), fill=255) #top right eye
-  draw.rectangle((60*x, img_size-90*x, 90*x, img_size-60*x), fill=255) #bottom left eye
+  draw.rectangle(((60*x, 60*x), (90*x, 90*x)), fill=255) #top left eye
+  draw.rectangle(((img_size-(90*x), (60*x)), (img_size-(60*x), (90*x))), fill=255) #top right eye
+  draw.rectangle(((60*x), img_size-(90*x), (90*x), img_size-(60*x)), fill=255) #bottom left eye
   return mask
 
 def style_outer_eyes(img):
-  img_size = img.size[0]
+  img_size = (img.size[0])*x
   eye_size = 70*x #default
   quiet_zone = 40*x #default
   mask = Image.new('L', img.size, 0)
   draw = ImageDraw.Draw(mask)
   draw.rectangle((40*x, 40*x, 110*x, 110*x), fill=255) #top left eye
-  draw.rectangle((img_size-110*x, 40*x, img_size-40*x, 110*x), fill=255) #top right eye
+  draw.rectangle((img_size-(110*x), (40*x), img_size-(40*x), (110*x)), fill=255) #top right eye
   draw.rectangle((40*x, img_size-110*x, 110*x, img_size-40*x), fill=255) #bottom left eye
   draw.rectangle((60*x, 60*x, 90*x, 90*x), fill=0) #top left eye
   draw.rectangle((img_size-90*x, 60*x, img_size-60*x, 90*x), fill=0) #top right eye
@@ -52,7 +52,7 @@ if not hasattr(PIL.Image, 'Resampling'):
 im = Image.open('H_znak_05.png')
 im = add_corners(im, 400)
 im.save('rounded-logo.png')
-
+x = 2
 
 qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H,box_size=(10* x))
 url = 'https://www.hanackabrest.cz/'
@@ -60,6 +60,7 @@ url = 'https://www.hanackabrest.cz/'
 qr.add_data(url)
 
 qr_inner_eyes_img = qr.make_image(image_factory=StyledPilImage,
+                                  module_drawer=RoundedModuleDrawer(),
                             eye_drawer=RoundedModuleDrawer(radius_ratio=1),
                             color_mask=SolidFillColorMask(front_color=(204, 45, 65)))
 
